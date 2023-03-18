@@ -1,7 +1,8 @@
 import paramiko
 import os
 import subprocess
-HOSTNAME = '192.168.150.143'#'169.254.52.141'
+
+HOSTNAME = '192.168.150.143'  # '169.254.52.141'
 USERNAME = 'pi'
 PASSWORD = 'QuanserPi3'
 
@@ -16,12 +17,13 @@ if __name__ == "__main__":
     ssh.connect(HOSTNAME, username=USERNAME, password=PASSWORD)
 
     # Execute a command on the host
-    stdin, stdout, stderr = ssh.exec_command("cd Desktop/ && python ImageCapture.py")
-    while stdout.read().decode() != "Capture Finished":
+    stdin, stdout, stderr = ssh.exec_command("cd Desktop/ && python ImageCapture_Motor.py")
+    # stdin1, stdout1, stderr1 = ssh.exec_command("cd /home/pi/Desktop/ && python Motor.py")
+    while not ("Capture Finished" in stdout.read().decode()):
         pass
     command = "sshpass -p " + PASSWORD + " scp -r pi@" + HOSTNAME + ":/home/pi/Desktop/Images/ ./"
     os.system("sshpass -p 'QuanserPi3' scp -r pi@" + HOSTNAME + ":/home/pi/Desktop/Images/ ./")
-    #stdin, stdout, stderr = ssh.exec_command('ls')
+    # stdin, stdout, stderr = ssh.exec_command('ls')
 
     # Print the output of the command
     print(stdout.read().decode())
