@@ -118,7 +118,7 @@ def generate_3d_model():
     # computing the mehs
     pcd.normals = o3d.utility.Vector3dVector(np.zeros((1, 3)))
     pcd.estimate_normals()
-    pcd.orient_normals_consistent_tangent_plane(10)
+    pcd.orient_normals_consistent_tangent_plane(5)
     o3d.visualization.draw_geometries([pcd], point_show_normal=True)
     bpa_mesh = o3d.geometry.TriangleMesh.create_from_point_cloud_ball_pivoting(pcd, o3d.utility.DoubleVector(
         [radius, radius * 2]))
@@ -132,7 +132,8 @@ def generate_3d_model():
 if __name__ == "__main__":
 
     #   cwd = os.getcwd() + "/Images/"
-    cwd = "Test_2/"  # change this to the image folder if needed
+    #cwd = "Test_2/"  # change this to the image folder if needed
+    cwd = "Images/"
     files = sorted(os.listdir(cwd))
     angle = 0
     height = 10
@@ -247,7 +248,7 @@ if __name__ == "__main__":
         alpha = radians(30)
         D = 100
         f = 5
-        R = 40
+        R = 10
         dist_list, xList, yList, zList = triangulation(spotList, horizontalP, verticalP, sensorWidth, sensorHeight,
                                                        alpha, D, f, R, angle, height)
         x_total_list += xList
@@ -267,7 +268,7 @@ if __name__ == "__main__":
         # if one rotation finished
         if (angle == radians(360)):
             angle = 0
-            height += 10
+            height += 40
         print("------" + "End of capturing " + file + "------" + '\n\n')
         cv2.destroyAllWindows()
 

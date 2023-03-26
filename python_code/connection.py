@@ -7,6 +7,13 @@ USERNAME = 'pi'
 PASSWORD = 'QuanserPi3'
 
 if __name__ == "__main__":
+
+    try:
+        os.system("rm -rf ./Images/")
+        os.mkdir("./outputs")
+    except Exception:
+        pass
+
     # Create SSH client
     ssh = paramiko.SSHClient()
 
@@ -21,6 +28,7 @@ if __name__ == "__main__":
     # stdin1, stdout1, stderr1 = ssh.exec_command("cd /home/pi/Desktop/ && python Motor.py")
     while not ("Capture Finished" in stdout.read().decode()):
         pass
+    print("Capture Finished")
     command = "sshpass -p " + PASSWORD + " scp -r pi@" + HOSTNAME + ":/home/pi/Desktop/Images/ ./"
     os.system("sshpass -p 'QuanserPi3' scp -r pi@" + HOSTNAME + ":/home/pi/Desktop/Images/ ./")
     # stdin, stdout, stderr = ssh.exec_command('ls')
@@ -28,7 +36,7 @@ if __name__ == "__main__":
     # Print the output of the command
     print(stdout.read().decode())
 
-    subprocess.run(['python', 'test.py'])
+    #subprocess.run(['python', 'test.py'])
     subprocess.run(['python', 'SpotDetection.py'])
 
     # Close connection
