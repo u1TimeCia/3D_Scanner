@@ -143,6 +143,16 @@ if __name__ == "__main__":
 
     # --------------------------Spot Detection Part----------------------#
     # looping through iamges
+    # files = os.listdir(cwd)
+    # files.sort()
+    # file_indexes = {file: index for index, file in enumerate(files)}
+    #
+    # # Print the files and their indexes
+    # for file in files:
+    #     print(f'{file}: {file_indexes[file]}')
+    files = sorted(os.listdir(cwd), key=lambda x: int(x.split('image')[1].split('.jpg')[0]))
+    # for file in files:
+    #     print(file)
     for file in files:
         if file == ".DS_Store":
             continue
