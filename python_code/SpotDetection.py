@@ -40,7 +40,7 @@ def Get_lightest_pixcel_array(gird_HSV,sort_min_max):
         lightest_pixcel = []
         if(sort_min_max[key][0] < 0):
             sort_min_max[key][0] = 0
-        elif(sort_min_max[key][1] > 320):
+        elif(sort_min_max[key][1] >= 320):
             sort_min_max[key][1] = 319
         for i in range(sort_min_max[key][0],sort_min_max[key][1]+1,1):
             #print("y",key,"x:",i,"light:",gird_HSV[key][i][2])
