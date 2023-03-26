@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3746c01d-b387-4e00-b1b5-d7357661508d" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/SpotDetection (2).ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/SpotDetection (2).ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SpotDetection (3).ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/SpotDetection (3).ipynb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

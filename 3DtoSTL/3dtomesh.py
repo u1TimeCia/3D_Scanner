@@ -1,10 +1,11 @@
 import numpy as np
 import open3d as o3d
 
-input_path = "C:/Users/Laura/Desktop/OI6/3DtoSTL/"
-output_path = "C:/Users/Laura/Desktop/OI6/3DtoSTL/outputs/"
+
+# input_path = "C:/Users/Laura/Desktop/OI6/3DtoSTL/"
+output_path = "outputs/"
 dataname = "teapot_306.xyz"
-point_cloud = np.loadtxt(input_path+dataname, delimiter = ',')
+point_cloud = np.loadtxt(dataname, delimiter = ',')
 
 #transfer the pointcloud data type from numpy to open3d o3d.geometry.PointCloud
 pcd = o3d.geometry.PointCloud()
