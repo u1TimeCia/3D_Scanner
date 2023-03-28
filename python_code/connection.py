@@ -32,7 +32,7 @@ if __name__ == "__main__":
     command = "sshpass -p " + PASSWORD + " scp -r pi@" + HOSTNAME + ":/home/pi/Desktop/Images/ ./"
     os.system("sshpass -p 'QuanserPi3' scp -r pi@" + HOSTNAME + ":/home/pi/Desktop/Images/ ./")
     # stdin, stdout, stderr = ssh.exec_command('ls')
-
+    print("Images Received")
     # Print the output of the command
     print(stdout.read().decode())
 

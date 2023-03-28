@@ -36,8 +36,9 @@ def Get_lightest_pixcel_array(gird_HSV,sort_min_max):
     lightest_pixcel_array = []
     for key in sort_min_max:
         lightest = 0
-        lightest_pixel_x = 0
+        #lightest_pixel_x = 0
         lightest_pixcel = []
+        lightest_arr = []
         if(sort_min_max[key][0] < 0):
             sort_min_max[key][0] = 0
         elif(sort_min_max[key][1] >= 320):
@@ -46,9 +47,12 @@ def Get_lightest_pixcel_array(gird_HSV,sort_min_max):
             #print("y",key,"x:",i,"light:",gird_HSV[key][i][2])
             if(gird_HSV[key][i][2] > lightest):
                 lightest = gird_HSV[key][i][2]
-                lightest_pixel_x = i
+                #lightest_pixel_x = i
+        for i in range(sort_min_max[key][0], sort_min_max[key][1] + 1, 1):
+            if(gird_HSV[key][i][2] == lightest):
+                lightest_arr.append(i)
         lightest_pixcel.append(key)
-        lightest_pixcel.append(lightest_pixel_x)
+        lightest_pixcel.append(lightest_arr[len(lightest_arr)//3])
         lightest_pixcel_array.append(lightest_pixcel)
     return lightest_pixcel_array
 
@@ -117,17 +121,21 @@ def generate_3d_model():
     radius = 3 * avg_dist
     # computing the mehs
     pcd.normals = o3d.utility.Vector3dVector(np.zeros((1, 3)))
-    pcd.estimate_normals()
-    pcd.orient_normals_consistent_tangent_plane(5)
-    o3d.visualization.draw_geometries([pcd], point_show_normal=True)
-    bpa_mesh = o3d.geometry.TriangleMesh.create_from_point_cloud_ball_pivoting(pcd, o3d.utility.DoubleVector(
+    pcd.remove_statistical_outlier(nb_neighbors=20, std_ratio=1)
+    downpcd = pcd.voxel_down_sample(voxel_size = 1)
+    # o3d.visualization.draw_geometries([pcd])
+    downpcd.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=10, max_nn=100))
+
+    downpcd.orient_normals_consistent_tangent_plane(10)
+    # o3d.visualization.draw_geometries([downpcd], point_show_normal=True)
+    bpa_mesh = o3d.geometry.TriangleMesh.create_from_point_cloud_ball_pivoting(downpcd, o3d.utility.DoubleVector(
         [radius, radius * 2]))
     o3d.visualization.draw_geometries([bpa_mesh])
     o3d.io.write_triangle_mesh(output_path + "bpa_mesh.stl", bpa_mesh)
     # computing the mesh
-    poisson_mesh = \
-    o3d.geometry.TriangleMesh.create_from_point_cloud_poisson(pcd, depth=8, width=0, scale=1.1, linear_fit=False)[0]
-    o3d.visualization.draw_geometries([poisson_mesh])
+    # poisson_mesh = \
+    # o3d.geometry.TriangleMesh.create_from_point_cloud_poisson(pcd, depth=8, width=0, scale=1.1, linear_fit=False)[0]
+    # o3d.visualization.draw_geometries([poisson_mesh])
 
 if __name__ == "__main__":
 
@@ -136,6 +144,7 @@ if __name__ == "__main__":
     cwd = "Images/"
     files = sorted(os.listdir(cwd))
     angle = 0
+    angle_deg = 0
     height = 10
     x_total_list = []
     y_total_list = []
@@ -150,7 +159,10 @@ if __name__ == "__main__":
     # # Print the files and their indexes
     # for file in files:
     #     print(f'{file}: {file_indexes[file]}')
-    files = sorted(os.listdir(cwd), key=lambda x: int(x.split('image')[1].split('.jpg')[0]))
+    # print(files[0].split('image'))
+    #files = sorted(os.listdir(cwd), key=lambda x: int(x.split('image')[1].split('.jpg')[0]))
+    files = sorted([f for f in os.listdir(cwd) if f.startswith('image') and f.endswith('.jpg')], key=lambda x: int(x.split('image')[1].split('.jpg')[0]))
+
     # for file in files:
     #     print(file)
     for file in files:
@@ -190,7 +202,7 @@ if __name__ == "__main__":
         # maxY = 0
         num = 0
         interval = 3
-        maxGB = 175  # filter for max GB total
+        maxGB = 200  # filter for max GB total
         spotList = []
         # traverse the multiple coutours and filter the noise
         for i in range(len(contours)):
@@ -223,7 +235,7 @@ if __name__ == "__main__":
                 sort_dict[subarray[1]].append(subarray[0])
             else:
                 sort_dict[subarray[1]] = [subarray[0]]
-        sort_min_max = {key: [min(values) - width // 40, max(values) + width // 40] for key, values in
+        sort_min_max = {key: [min(values) - width // 10, max(values) + width // 10] for key, values in
                         sort_dict.items()}
         #print(sort_min_max)
         # print(sort_min_max)
@@ -253,12 +265,12 @@ if __name__ == "__main__":
         # triangulation(pList,horizontalP,sensorWidth,alpha,D,f)
         horizontalP = img.shape[1]
         verticalP = img.shape[0]
-        sensorWidth = 3
-        sensorHeight = 2
+        sensorWidth = 3.76
+        sensorHeight = 2.74
         alpha = radians(30)
-        D = 100
-        f = 5
-        R = 10
+        D = 105
+        f = 3.6
+        R = 8
         dist_list, xList, yList, zList = triangulation(spotList, horizontalP, verticalP, sensorWidth, sensorHeight,
                                                        alpha, D, f, R, angle, height)
         x_total_list += xList
@@ -275,11 +287,16 @@ if __name__ == "__main__":
         #cv2.imshow("img3", img)
 
         angle += radians(1.8)  # default step size 1.8 for NEMA 17
+        angle_deg += 2
+        #print(angle_deg, angle_deg == 360)
         # if one rotation finished
-        if (angle == radians(360)):
+        if (angle_deg == 400):
+            print("ji")
             angle = 0
-            height += 40
+            angle_deg = 0
+            height -= 33
         print("------" + "End of capturing " + file + "------" + '\n\n')
+        #cv2.waitKey()
         cv2.destroyAllWindows()
 
     xyz_array = np.column_stack((x_total_list, y_total_list, z_total_list))
